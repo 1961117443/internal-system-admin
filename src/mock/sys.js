@@ -32,3 +32,17 @@ export const getUserData = req => {
   return tableData
 }
 
+export const postUserData = req => {
+  let tableData = []
+  doCustomTimes(5, () => {
+    tableData.push(Mock.mock({
+      id: '@guid',
+      code: '@first',
+      name: '@name',
+      isDisable: '@boolean',
+      // email: '@email',
+      createTime: '@date'
+    }))
+  })
+  return 'ok'
+}

@@ -13,3 +13,11 @@ export const getUserData = () => {
     method: 'get'
   })
 }
+
+export const postUserData = (data) => {
+  return axios.request({
+    url: 'post_user_data',
+    method: 'post',
+    params: data
+  })
+}

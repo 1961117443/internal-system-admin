@@ -1,58 +1,91 @@
 <template>
   <div>
     <Card>
-      <tables ref="tables" editable searchable search-place="top" v-model="tableData" :columns="columns" 
+      <tables ref="tables" editable searchable search-place="top" v-model="tableData" :columns="columns"
       @on-delete="handleDelete"
       @on-edit="showEditForm" />
       <!-- <Button style="margin: 10px 0;" type="primary" @click="exportExcel">导出为Csv文件</Button> -->
     </Card>
+
     <Modal
-        v-model="modal1"
-        title="用户信息" 
-        @on-ok="ok">
-        <Form ref="formValidate" :model="formValidate" :label-width="80">
-        <FormItem label="用户账号" prop="code">
-            <Input v-model="formValidate.code"></Input>
-        </FormItem> 
-        <FormItem label="用户名称" prop="name">
-            <Input v-model="formValidate.name" placeholder="输入姓名"></Input>
-        </FormItem>  
-        <FormItem>
-            <!-- <Button type="primary" @click="handleSubmit('formValidate')">Submit</Button>
-            <Button @click="handleReset('formValidate')" style="margin-left: 8px">Reset</Button> -->
-        </FormItem> 
-        </Form>
-    </Modal>  
-
-    <template id="editform">
-
-    </template>
+        v-model="form.__editing"
+        :title="form.__title"
+        @on-ok="saveUser" >
+        <Form
+      ref="userForm"
+      :model="form"
+      label-position="right"
+       :label-width="80"
+    >
+      <FormItem prop="code"  label="用户账号">
+        <Input v-model="form.code" placeholder="请输入用户账号"></Input>
+      </FormItem>
+      <FormItem prop="name" label="用户名称">
+        <Input v-model="form.name" placeholder="请输入用户名">
+          <span slot="prepend">
+            <Icon :size="16" type="ios-person"></Icon>
+          </span>
+        </Input>
+      </FormItem>
+    </Form>
+    </Modal>
   </div>
 </template>
 
 <script>
 import Tables from '_c/tables'
-import { getUserData } from '@/api/sys' 
+import UserForm from '_c/sys/user-form'
+import { getUserData, postUserData } from '@/api/sys'
 export default {
   name: 'user_manage_page',
   components: {
-    Tables
+    Tables,
+    UserForm
+
   },
   data () {
-    return { 
-      formValidate:{
-        name:''
+    return {
+      form: {
+        __title: '',
+        __editing: false
       },
-      modal1:false,
+      modal1: false,
       columns: [
         { title: '用户账号', key: 'code' },
         { title: '用户名称', key: 'name' },
-        { title: '是否停用', key: 'isDisable' },
+        { title: '停用',
+          key: 'isDisable',
+          render: (h, p) => {
+            let c = h('i-switch', {
+              props: {
+                value: p.row.isDisable,
+                size: 'large'
+              },
+              on: {
+                'on-change': (val) => {
+                  if (!val) {
+                    this.$Modal.confirm({
+                      title: '是否禁用当前用户',
+                      onOk: () => {
+                        console.log(c)
+                      }
+                    })
+                  }
+                }
+              }
+            }, [h('span', {
+              slot: 'open', domProps: { innerHTML: 'ON' }
+            }), h('span', {
+              slot: 'close', domProps: { innerHTML: 'OFF' }
+            })])
+            return c
+          }
+        },
         // { title: 'Create-Time', key: 'createTime' },
         {
           title: '操作',
           key: 'handle',
-          options: ['delete','edit'] 
+          options: ['delete', 'edit']
         }
       ],
       tableData: []
@@ -61,13 +94,19 @@ export default {
   methods: {
     handleDelete (params) {
       console.log(params)
-    }, 
-    ok(){
-      console.log(this.formValidate)
     },
-    showEditForm(params){  
-      this.formValidate = Object.assign({},params.row)
-      this.modal1 = true   
+    saveUser () {
+      postUserData(this.form).then(res => {
+        console.log(res)
+        this.form.__data.code = this.form.code
+        this.form.__data.name = this.form.name
+      })
+    },
+    showEditForm (params) {
+      this.form = Object.assign(this.form, params.row)
+      this.form.__title = '修改用户信息'
+      this.form.__editing = true
+      this.form.__data = params.row
     },
     exportExcel () {
       this.$refs.tables.exportCsv({
@@ -79,9 +118,9 @@ export default {
     getUserData().then(res => {
       this.tableData = res.data
     })
-  } 
+  }
 }
 </script>
 
-<style> 
+<style>
 </style>
