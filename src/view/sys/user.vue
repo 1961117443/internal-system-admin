@@ -12,12 +12,12 @@
         :title="form.__title"
         @on-ok="saveUser" >
         <Form
-      ref="userForm"
-      :model="form"
+      ref="userFormDialog"
       label-position="right"
        :label-width="80"
     >
-      <FormItem prop="code"  label="用户账号">
+      <user-form :user="form" v-model="form" ></user-form>
+      <!-- <FormItem prop="code"  label="用户账号">
         <Input v-model="form.code" placeholder="请输入用户账号"></Input>
       </FormItem>
       <FormItem prop="name" label="用户名称">
@@ -26,7 +26,7 @@
             <Icon :size="16" type="ios-person"></Icon>
           </span>
         </Input>
-      </FormItem>
+      </FormItem> -->
     </Form>
     </Modal>
   </div>
@@ -51,8 +51,8 @@ export default {
       },
       modal1: false,
       columns: [
-        { title: '用户账号', key: 'code' },
-        { title: '用户名称', key: 'name' },
+        { title: '用户账号', key: 'userCode' },
+        { title: '用户名称', key: 'userName' },
         { title: '停用',
           key: 'isDisable',
           render: (h, p) => {
@@ -98,15 +98,20 @@ export default {
     saveUser () {
       postUserData(this.form).then(res => {
         console.log(res)
-        this.form.__data.code = this.form.code
-        this.form.__data.name = this.form.name
+        this.form.__data.userCode = this.form.userCode
+        this.form.__data.userName = this.form.userName
       })
     },
-    showEditForm (params) {
-      this.form = Object.assign(this.form, params.row)
+    showEditForm (params) { 
+      console.log(this.$refs.userFormDialog)
+      //this.form = Object.assign(this.form, params.row)
+      this.form.userCode = params.row.userCode
+      this.form.userName = params.row.userName
       this.form.__title = '修改用户信息'
       this.form.__editing = true
       this.form.__data = params.row
+
+      console.log(this.$refs.userFormDialog)
     },
     exportExcel () {
       this.$refs.tables.exportCsv({

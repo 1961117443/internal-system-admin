@@ -1,18 +1,17 @@
 <template>
   <Form
-      ref="userForm"
-      :model="form"
+      ref="userForm" 
       label-position="right"
        :label-width="80"
     >
       <FormItem label="用户账号">
-        <Input v-model="form.userCode" placeholder="请输入用户账号"></Input>
+        <Input v-model="user.userCode" placeholder="请输入用户账号"></Input>
       </FormItem>
       <FormItem prop="userName" label="用户名称">
-        <Input v-model="form.userName" placeholder="请输入用户名">
-          <span slot="prepend">
+        <Input v-model="user.userName" placeholder="请输入用户名称">
+          <!-- <span slot="prepend">
             <Icon :size="16" type="ios-person"></Icon>
-          </span>
+          </span> -->
         </Input>
       </FormItem>
     </Form>
@@ -22,6 +21,10 @@
 export default {
   name: 'UserForm',
   props: {
+    // user:{
+    //   type: Object,
+    //   default:()=>{  }
+    // }
     // userNameRules: {
     //   type: Array,
     //   default: () => {
@@ -37,8 +40,8 @@ export default {
   },
   data () {
     return {
-      form: {
-        userCode: 'admin',
+      user: {
+        userCode: '',
         userName: ''
       }
     }
@@ -50,12 +53,9 @@ export default {
     //     password: this.passwordRules
     //   };
     // }
-  },
-  beforeCreate () {
-    console.log(this)
-  },
-  created () {
-    console.log(this)
+  }, 
+  created(){
+    console.log (this.user)
   },
   methods: {
     handleSubmit () {
