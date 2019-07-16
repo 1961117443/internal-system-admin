@@ -36,9 +36,9 @@ class HttpRequest {
   interceptors (instance, url) {
     // 请求拦截
     instance.interceptors.request.use(config => {
-      if (config.params) {
-        console.log(config.params)
-      }
+      // if (config.params) {
+      //   console.log(config.params)
+      // }
       // 添加全局的loading...
       if (!Object.keys(this.queue).length) {
         // Spin.show() // 不建议开启，因为界面不友好
