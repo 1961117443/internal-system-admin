@@ -3,7 +3,6 @@
     ref="userDialog"
     v-model="show"
     :title="title"
-    :rules="rules"
     :loading="true"
     :mask-closeable="false"
   >
@@ -51,7 +50,8 @@ export default {
     handleSubmit(params) {
       this.$refs.userForm.validate(valid => {
         if (valid) {
-          this.$emit("on-success-valid", this.form);
+          let obj=  this.$emit("on-success-valid", this.form);
+          console.log(obj)
         }
       });
     }

@@ -6,6 +6,13 @@ export const getRoleData = () => {
     method: 'get'
   })
 }
+export const postRoleData = (data) => { 
+  return axios.request({
+    url: 'post_role_data',
+    method: 'post',
+    params: data
+  })
+}
 
 export const getUserData = () => {
   return axios.request({

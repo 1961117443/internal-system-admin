@@ -17,6 +17,19 @@ export const getRoleData = req => {
   return tableData
 }
 
+export const postRoleData = req=>{ 
+  let role = {}
+  doCustomTimes(5, () => {
+    role=Mock.mock({
+      id: '@guid',
+      name: '@name',
+      // email: '@email',
+      createTime: '@date'
+    })
+  })
+  return role
+}
+
 export const getUserData = req => {
   let tableData = []
   doCustomTimes(10, () => {
@@ -34,7 +47,7 @@ export const getUserData = req => {
 
 export const postUserData = req => {
   let tableData = []
-  doCustomTimes(5, () => {
+  doCustomTimes(10, () => {
     tableData.push(Mock.mock({
       id: '@guid',
       code: '@first',
