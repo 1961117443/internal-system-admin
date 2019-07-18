@@ -18,7 +18,7 @@
           <Input v-model="form.name" placeholder="输入角色名称"></Input>
         </FormItem>
         <FormItem>
-          <Button type="primary" @click="handleSubmit('form')">保存</Button>
+          <Button type="primary" @click="handleSubmit('form')">{{buttonTitle}}</Button>
           <Button @click="handleReset('form')" style="margin-left: 8px">清空</Button> 
         </FormItem>
       </Form>
@@ -167,6 +167,15 @@ export default {
   computed:{
     canEdit(){
       return true
+    },
+    buttonTitle(){ 
+      if (this.form.id && this.form.id.length===0) {
+        return '新增'
+      }
+      else{
+        return '修改'
+      }
+      
     }
   },
   mounted() {
