@@ -37,3 +37,19 @@ export const postUserData = (data) => {
     params: data
   })
 }
+
+
+export const getMenuData = () => {
+  return axios.request({
+    url: 'get_menu_data',
+    method: 'get'
+  })
+}
+
+export const postMenuData = (data) => { 
+  return axios.request({
+    url: 'post_menu_data',
+    method: 'post',
+    params: data
+  })
+}

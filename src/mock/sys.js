@@ -59,3 +59,34 @@ export const postUserData = req => {
   })
   return 'ok'
 }
+
+
+export const getMenuData = req => {
+  let tableData = []
+  doCustomTimes(10, () => {
+    tableData.push(Mock.mock({
+      id: '@guid',
+      name: '@name',
+      url:"@email",
+      httpMethod:"@name",
+      // email: '@email',
+      createTime: '@date'
+    }))
+  })
+  return tableData
+}
+
+export const postMenuData = req=>{ 
+  let role = {}
+  doCustomTimes(5, () => {
+    role=Mock.mock({
+      id: '@guid',
+      name: '@name',
+      url:"@email",
+      httpMethod:"@name",
+      // email: '@email',
+      createTime: '@date'
+    })
+  })
+  return role
+}

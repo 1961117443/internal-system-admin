@@ -19,7 +19,8 @@
           <Input v-model="form.name" placeholder="输入角色名称"></Input>
         </FormItem>
         <FormItem>
-          <Button type="primary" @click="handleSubmit('form')">{{buttonTitle}}</Button>
+          <Button v-if="isAdd" type="primary" @click="handleSubmit('form')">新增</Button>
+          <Button v-else type="primary" @click="handleSubmit('form')">保存</Button>
           <Button @click="handleReset('form')" style="margin-left: 8px">清空</Button>
         </FormItem>
       </Form>
@@ -44,7 +45,7 @@
     <!--设置左侧弹出框-->
     <drag-drawer
       v-model="showAllot"
-      :width.sync="width2"
+      :width.sync="drawerWidth"
       min-width="300px"
       :inner="true"
       :transfer="false"
@@ -60,7 +61,7 @@
         <b>分配权限</b>
       </div>
       <!-- 分配权限组件，传入当前的角色id -->
-      <allot-auth roleId="abc1" @on-success="handleAllotSubmit"></allot-auth>
+      <allot-auth :roleId="roleId" @on-success="handleAllotSubmit"></allot-auth>
       <!-- <div slot="footer"> 
         <router-view></router-view>
       </div> -->
@@ -83,7 +84,7 @@ export default {
   data() {
     return {
       showAllot: false,
-      width2: 500,
+      drawerWidth: 500,
       placement: true,
       draggable: true,
       ruleValidate: {
@@ -91,6 +92,7 @@ export default {
           { required: true, message: "角色名称不能为空！", trigger: "blur" }
         ]
       },
+      roleId:'',
       form: {
         id: "",
         name: ""
@@ -144,7 +146,7 @@ export default {
     handleResize(event) {
       const { atMin } = event;
       /* eslint-disable */
-      console.log(atMin);
+      //console.log(atMin);
     },
     handleClear() {
       this.form = {
@@ -166,7 +168,7 @@ export default {
         };
         console.log(data);
       }
-    },
+    }, 
     /**
      * 保存角色
      */
@@ -190,7 +192,6 @@ export default {
     /**
      * 重置角色窗体字段
      * */
-
     handleReset(name) {
       this.handleClear();
       //this.$refs[name].resetFields();
@@ -199,8 +200,8 @@ export default {
      * 分配权限
      */
     handleAllotAuth(params) {
-      this.showAllot = true;
-      console.log(params);
+      this.roleId = params.row.id
+      this.showAllot = true; 
     },
     /**
      * 保存分配的权限
@@ -215,18 +216,17 @@ export default {
     }
   },
   computed: {
+    isAdd(){ 
+      if (this.form.id=='') {
+        return true
+      } 
+      return false
+    },
     placementComputed() {
       return this.placement ? "left" : "right";
     },
     canEdit() {
       return true;
-    },
-    buttonTitle() {
-      if (this.form.id && this.form.id.length === 0) {
-        return "新增";
-      } else {
-        return "修改";
-      }
     }
   },
   mounted() {

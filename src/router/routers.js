@@ -84,7 +84,7 @@ export default [
           icon: 'md-menu',
           title: '菜单管理'
         },
-        component: () => import('@/view/components/tree-select/index.vue')
+        component: () => import('@/view/sys/menu.vue')
       },
       {
         path: 'auth_manage_page',

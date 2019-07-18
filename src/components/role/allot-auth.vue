@@ -1,7 +1,7 @@
 <template>
   <div>
     <Button type="primary" @click="handleSubmit('roleTree')">保存</Button>
-    <Divider />
+    <Divider size="small" />
     <Tree ref="roleTree" :data="data" show-checkbox multiple></Tree>
   </div>
 </template>
@@ -19,28 +19,13 @@ export default {
       type: String,
       default: ""
     }
-  },
-  beforeCreate(){
-    console.log("beforeCreate")
-  },created(){
-    console.log("Create")
-  },
-  beforeMounted() {
-    console.log("beforeMounted") 
-  },
-  beforeUpdate() {
-    console.log("beforeUpdate") 
-  },
-  updated(){
-    console.log("updated") 
-  },
-  mounted() {
-    console.log("mounted")
-    this.getRoleAuth();
+  }, 
+  mounted() { 
+    // this.getRoleAuth();
   },
   watch:{
     roleId(val){
-      console.log(val)
+      this.getRoleAuth();
     }
   },
   methods: {
