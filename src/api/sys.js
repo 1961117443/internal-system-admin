@@ -6,6 +6,15 @@ export const getRoleData = () => {
     method: 'get'
   })
 }
+export const getRoleAuthData = () => {
+  return axios.request({
+    baseURL:'/',
+    url : '../data/auth.json',
+    //url: 'get_role_auth',
+    method: 'get'
+  })
+}
+
 export const postRoleData = (data) => { 
   return axios.request({
     url: 'post_role_data',

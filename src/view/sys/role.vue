@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- 角色窗体 -->
     <Card>
       <p slot="title">
         <Icon type="md-person"></Icon>编辑角色
@@ -19,11 +20,12 @@
         </FormItem>
         <FormItem>
           <Button type="primary" @click="handleSubmit('form')">{{buttonTitle}}</Button>
-          <Button @click="handleReset('form')" style="margin-left: 8px">清空</Button> 
+          <Button @click="handleReset('form')" style="margin-left: 8px">清空</Button>
         </FormItem>
       </Form>
     </Card>
     <Divider />
+    <!-- 角色列表 -->
     <Card>
       <tables
         ref="tables"
@@ -39,19 +41,51 @@
       />
       <!-- <Button style="margin: 10px 0;" type="primary" @click="exportExcel">导出为Csv文件</Button> -->
     </Card>
+    <!--设置左侧弹出框-->
+    <drag-drawer
+      v-model="showAllot"
+      :width.sync="width2"
+      min-width="300px"
+      :inner="true"
+      :transfer="false"
+      placement="left"
+      :draggable="draggable"
+      @on-resize="handleResize"
+      class-name="content-wrapper"
+      :scrollable="true"
+      :mask-closable="false"
+    >
+      <div slot="header">
+        <Icon type="md-aperture" :size="18"></Icon>
+        <b>分配权限</b>
+      </div>
+      <!-- 分配权限组件，传入当前的角色id -->
+      <allot-auth roleId="abc1" @on-success="handleAllotSubmit"></allot-auth>
+      <!-- <div slot="footer"> 
+        <router-view></router-view>
+      </div> -->
+    </drag-drawer>
   </div>
 </template>
 
 <script>
 import Tables from "_c/tables";
+import DragDrawer from "_c/drag-drawer";
+import AllotAuth from "_c/role/allot-auth.vue";
 import { getRoleData, postRoleData } from "@/api/sys";
 export default {
   name: "role_manage_page",
   components: {
-    Tables
+    Tables,
+    AllotAuth,
+    DragDrawer
   },
   data() {
     return {
+      showAllot: false,
+      width2: 500,
+      placement: true,
+      draggable: true,
       ruleValidate: {
         name: [
           { required: true, message: "角色名称不能为空！", trigger: "blur" }
@@ -71,29 +105,33 @@ export default {
           key: "handle",
           options: ["delete", "edit"],
           button: [
-            (h, params, vm) => {  
-              let allot= h('Button', {
-                props: {
-                  type: 'text',
-                  ghost: true,
-                  disabled:!this.canEdit
-                },
-                on: {
-                  'click': () => { 
-                    vm.$emit('on-allot-auth', params) 
-                  }
-                }
-              }, [
-                h('Icon', {
+            (h, params, vm) => {
+              let allot = h(
+                "Button",
+                {
                   props: {
-                    type: 'md-contact',
-                    size: 18,
-                    color: '#000000'
+                    type: "text",
+                    ghost: true,
+                    disabled: !this.canEdit
+                  },
+                  on: {
+                    click: () => {
+                      vm.$emit("on-allot-auth", params);
+                    }
                   }
-                })
-              ])
+                },
+                [
+                  h("Icon", {
+                    props: {
+                      type: "md-contact",
+                      size: 18,
+                      color: "#000000"
+                    }
+                  })
+                ]
+              );
               if (this.canEdit) {
-                return allot
+                return allot;
               }
             }
           ]
@@ -103,6 +141,11 @@ export default {
     };
   },
   methods: {
+    handleResize(event) {
+      const { atMin } = event;
+      /* eslint-disable */
+      console.log(atMin);
+    },
     handleClear() {
       this.form = {
         id: "",
@@ -130,14 +173,14 @@ export default {
     handleSubmit(name) {
       this.$refs[name].validate(valid => {
         if (valid) {
-          postRoleData(this.form).then(res => {  
+          postRoleData(this.form).then(res => {
             if (this.form.initRowIndex > -1) {
               let row = this.tableData[this.form.initRowIndex];
               Object.assign(row, this.form);
             } else {
               res.data.name = this.form.name;
               this.tableData.push(res.data);
-            } 
+            }
             this.$Message.success("保存成功!");
             this.handleClear();
           });
@@ -149,14 +192,21 @@ export default {
      * */
 
     handleReset(name) {
-      this.handleClear()
+      this.handleClear();
       //this.$refs[name].resetFields();
     },
     /**
      * 分配权限
      */
     handleAllotAuth(params) {
-      console.log(params)
+      this.showAllot = true;
+      console.log(params);
+    },
+    /**
+     * 保存分配的权限
+     */
+    handleAllotSubmit(params){
+      this.showAllot = false;
     },
     exportExcel() {
       this.$refs.tables.exportCsv({
@@ -164,18 +214,19 @@ export default {
       });
     }
   },
-  computed:{
-    canEdit(){
-      return true
+  computed: {
+    placementComputed() {
+      return this.placement ? "left" : "right";
     },
-    buttonTitle(){ 
-      if (this.form.id && this.form.id.length===0) {
-        return '新增'
+    canEdit() {
+      return true;
+    },
+    buttonTitle() {
+      if (this.form.id && this.form.id.length === 0) {
+        return "新增";
+      } else {
+        return "修改";
       }
-      else{
-        return '修改'
-      }
-      
     }
   },
   mounted() {
@@ -189,5 +240,8 @@ export default {
 };
 </script>
 
-<style>
+<style lang="less">
+.content-wrapper {
+  position: relative;
+}
 </style>
