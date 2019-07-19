@@ -1,5 +1,5 @@
 <template>
-  <div> 
+  <div>
     <!-- 菜单列表 -->
     <Card>
       <tables
@@ -13,6 +13,19 @@
         @on-edit="handleEdit"
       />
       <!-- <Button style="margin: 10px 0;" type="primary" @click="exportExcel">导出为Csv文件</Button> -->
+      <tree-table
+        expand-key="name"
+        :expand-type="false"
+        :selectable="false"
+        :columns="columns"
+        :data="tableData"
+      >
+        <template slot="likes" slot-scope="scope">
+          <Button ghost type="text"  @click="handleEdit(scope)">
+            <Icon type="md-create" color='#000000' size="18px"></Icon>
+          </Button>
+        </template>
+      </tree-table>
     </Card>
     <!--设置右边弹出框-->
     <drag-drawer
@@ -28,7 +41,10 @@
       :mask-closable="false"
     >
       <div slot="header">
-        <h2>菜单信息</h2>
+        <Button v-if="isAdd" type="primary" @click="handleSubmit('form')">新增</Button>
+        <Button v-else type="primary" @click="handleSubmit('form')">保存</Button>
+        <Button @click="handleReset('form')" style="margin-left: 8px">清空</Button>
+        <!-- <h2>菜单信息</h2> -->
       </div>
       <!-- 菜单窗体 -->
       <Form
@@ -53,15 +69,10 @@
             <Option value="post" key="post">post</Option>
             <Option value="delete" key="delete">delete</Option>
             <Option value="put" key="put">put</Option>
-
           </Select>
         </FormItem>
       </Form>
-      <div class="form-drawer-footer" slot="footer">
-        <Button @click="handleReset('form')" style="margin-right: 8px">清空</Button>
-        <Button v-if="isAdd" type="primary" @click="handleSubmit('form')">新增</Button>
-        <Button v-else type="primary" @click="handleSubmit('form')">保存</Button>
-      </div>
+      <div class="form-drawer-footer" slot="footer"></div>
     </drag-drawer>
   </div>
 </template>
@@ -96,12 +107,14 @@ export default {
         // { title: 'Id', key: 'id', sortable: true },
         { title: "菜单名称", key: "name" },
         { title: "接口地址", key: "url" },
-        { title: "请求方式", key: "httpMethod",width:100 },
+        { title: "请求方式", key: "httpMethod" },
         { title: "创建时间", key: "createTime" },
         {
           title: "操作",
           key: "handle",
-          options: ["delete", "edit"]
+          options: ["delete", "edit"],
+          type: 'template',
+          template: 'likes'
         }
       ],
       tableData: []
@@ -118,6 +131,7 @@ export default {
       console.log(params);
     },
     handleEdit(params) {
+      console.log(params)
       this.form = Object.assign(this.form, params.row);
       this.showDrawer = true;
     },
@@ -131,14 +145,14 @@ export default {
             if (this.form.initRowIndex > -1) {
               let row = this.tableData[this.form.initRowIndex];
               Object.assign(row, this.form);
-              console.log(row)
+              console.log(row);
             } else {
               res.data.name = this.form.name;
               this.tableData.push(res.data);
             }
             this.$Message.success("保存成功!");
             this.handleClear();
-            this.showDrawer = false
+            this.showDrawer = false;
           });
         }
       });
@@ -155,10 +169,10 @@ export default {
         filename: `table-${new Date().valueOf()}.csv`
       });
     },
-    getData(){
-        getMenuData().then(res => {
-            this.tableData = res.data;
-            });
+    getData() {
+      getMenuData().then(res => {
+        this.tableData = res.data;
+      });
     }
   },
   computed: {
@@ -172,7 +186,7 @@ export default {
     }
   },
   mounted() {
-    this.getData()
+    this.getData();
   },
   created() {
     this.h = document.documentElement.clientHeight - 300;

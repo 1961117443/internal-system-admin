@@ -7,10 +7,8 @@ export const getRoleData = () => {
   })
 }
 export const getRoleAuthData = () => {
-  return axios.request({
-    baseURL:'/',
-    url : '../data/auth.json',
-    //url: 'get_role_auth',
+  return axios.request({ 
+    url: 'get_role_auth',
     method: 'get'
   })
 }

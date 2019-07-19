@@ -1,9 +1,13 @@
 import Mock from 'mockjs'
 import { doCustomTimes } from '@/libs/util'
-// import orgData from './data/org-data'
+import testData from './data/test-data'
 // import { treeData } from './data/tree-select'
 // const Random = Mock.Random
 
+export const getRoleAuth = req => { 
+  console.log(testData)
+  return testData.roleAuth
+}
 export const getRoleData = req => {
   let tableData = []
   doCustomTimes(10, () => {
@@ -61,19 +65,8 @@ export const postUserData = req => {
 }
 
 
-export const getMenuData = req => {
-  let tableData = []
-  doCustomTimes(10, () => {
-    tableData.push(Mock.mock({
-      id: '@guid',
-      name: '@name',
-      url:"@email",
-      httpMethod:"@name",
-      // email: '@email',
-      createTime: '@date'
-    }))
-  })
-  return tableData
+export const getMenuData = req => { 
+  return testData.menu
 }
 
 export const postMenuData = req=>{ 
