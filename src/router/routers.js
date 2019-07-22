@@ -126,13 +126,13 @@ export default [
         component: () => import('@/view/demand/input.vue')
       },
       {
-        path: 'input2',
-        name: 'demand_input_page2',
+        path: 'list',
+        name: 'demand_list_page',
         meta: {
           icon: 'md-people',
           title: '需求列表'
         },
-        component: () => import('@/view/demand/input.vue')
+        component: () => import('@/view/demand/list.vue')
       }
     ]
   },
