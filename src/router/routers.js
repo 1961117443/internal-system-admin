@@ -18,6 +18,16 @@ import parentView from '@/components/parent-view'
  */
 
 export default [
+  // {
+  //   path: '/test',
+  //   name: 'test',
+  //   meta: {
+  //     title: 'test - 测试',
+  //     hideInMenu: true,
+  //     isLogin:false
+  //   },
+  //   component: () => import('@/view/test/test.vue')
+  // },
   {
     path: '/login',
     name: 'login',
@@ -94,6 +104,35 @@ export default [
           title: '权限管理'
         },
         component: () => import('@/view/components/tree-select/index.vue')
+      }
+    ]
+  }, 
+  {
+    path:'/demand',
+    name:'demandManage',
+    meta:{
+      icon: 'logo-buffer',
+      title: '需求管理'
+    },
+    component:Main,
+    children:[
+      {
+        path: 'input',
+        name: 'demand_input_page',
+        meta: {
+          icon: 'md-people',
+          title: '需求录入'
+        },
+        component: () => import('@/view/demand/input.vue')
+      },
+      {
+        path: 'input2',
+        name: 'demand_input_page2',
+        meta: {
+          icon: 'md-people',
+          title: '需求列表'
+        },
+        component: () => import('@/view/demand/input.vue')
       }
     ]
   },

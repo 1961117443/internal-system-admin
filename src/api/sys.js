@@ -51,3 +51,12 @@ export const postMenuData = (data) => {
     params: data
   })
 }
+
+export const postFormulaData = (data) => { 
+  return axios.request({
+    baseURL:'http://193.112.92.216:3000',
+    url: '/api/Server/eval',
+    method: 'post',
+    data: data
+  })
+}

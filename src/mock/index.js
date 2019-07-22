@@ -35,4 +35,5 @@ Mock.mock(/\/get_menu_data/, getMenuData)
 Mock.mock(/\/post_menu_data/, postMenuData)
 Mock.mock(/\/get_role_auth/, getRoleAuth)
 
+
 export default Mock

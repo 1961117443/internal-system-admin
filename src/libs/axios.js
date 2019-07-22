@@ -70,7 +70,7 @@ class HttpRequest {
   }
   request (options) {
     const instance = axios.create()
-    options = Object.assign(this.getInsideConfig(), options)
+    options = Object.assign(this.getInsideConfig(), options) 
     this.interceptors(instance, options.url)
     return instance(options)
   }
