@@ -7,3 +7,19 @@ export const postDemand = function(data){
         data:data
       })
 }
+
+export const get = function(data){
+  return axios.request({
+    url:'/demand/get',
+    method:'get',
+    params:data
+  })
+}
+
+export const getList = function(data){
+  return axios.request({
+    url:'/demand/list',
+    method:'get',
+    params:data
+  })
+}

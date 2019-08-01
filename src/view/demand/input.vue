@@ -90,13 +90,13 @@
             </Row>
             <Row>
               <Col span="24">
-                <FormItem label="不处理意见" prop="unDealMemo">
+                <!-- <FormItem label="不处理意见" prop="unDealMemo">
                   <Input
                     v-model="formValidate.unDealMemo"
                     type="textarea"
                     :autosize="{minRows: 2,maxRows: 5}" 
                   ></Input>
-                </FormItem>
+                </FormItem>-->
               </Col>
             </Row>
           </Col>
@@ -123,7 +123,7 @@
 
 <script>
 import MarkdownEditor from "_c/markdown";
-import { postDemand } from '@/api/demand'
+import { postDemand,get } from "@/api/demand";
 
 export default {
   components: {
@@ -131,22 +131,31 @@ export default {
   },
   data() {
     return {
+      id:this.$route.query.id,
       formValidate: {
-        name: "",
-        mail: "",
-        city: "",
-        gender: "",
-        interest: [],
-        date: "",
-        time: "",
+        id: "",
+        billCode: "",
+        inputDate: "",
+        theoryDate: "",
+        plannedCompletionDate: "",
+        suggestDate: "",
+        customerName: "",
+        priority: "",
+        versionNumber: "",
+        clientRelationship: "",
+        implement: "",
+        demander: "",
+        telephone: "",
+        moduleName: "",
         describe: ""
       },
       ruleValidate: {
-        name: [
+        billCode1: [
           {
             required: true,
-            message: "The name cannot be empty",
-            trigger: "blur"
+            message: "需求编号不能为空",
+            trigger: "blur",
+            pattern: /^[a-z]+$/
           }
         ],
         mail: [
@@ -214,17 +223,28 @@ export default {
       }
     };
   },
+  mounted(){
+    // console.log(this.id)
+    this.get();
+  },
   methods: {
+    get(){
+      get({id:this.id}).then(res=>{
+        console.log(res.data)
+        this.formValidate = res.data
+      })
+    },
     handleSubmit(name) {
       this.$refs[name].validate(valid => {
         if (valid) {
-            postDemand(this.$refs[name].model).then(res=>{
-                console.log(res.data)
-                   // this.$Message.success(JSON.stringify(this.$refs[name].model));
+          console.log(JSON.stringify(this.$refs[name].model));
+          postDemand(this.$refs[name].model).then(res => {
+            console.log(res.data);
+            // this.$Message.success(JSON.stringify(this.$refs[name].model));
 
-                        this.$Message.success("Success!");
-                        this.handleReset(name)
-            }) 
+            this.$Message.success("Success!");
+            this.handleReset(name);
+          });
         } else {
           this.$Message.error("Fail!");
         }
