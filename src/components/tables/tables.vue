@@ -36,7 +36,7 @@
     >
       <slot name="header" slot="header"></slot>
       <slot name="footer" slot="footer"></slot>
-      <slot name="loading" slot="loading"></slot>
+      <slot name="loading" slot="loading"></slot> 
     </Table>
     <div v-if="searchable && searchPlace === 'bottom'" class="search-con search-con-top">
       <Select v-model="searchKey" class="search-col">

@@ -113,7 +113,10 @@
         </FormItem>
 
         <FormItem>
-          <Button type="primary" @click="handleSubmit('formValidate')">提交</Button>
+          <Button type="primary" :loading="loading" @click="handleSubmit('formValidate')">
+            <span v-if="!loading">提交</span>
+            <span v-else>提交...</span>
+          </Button>
           <!-- <Button @click="handleReset('formValidate')" style="margin-left: 8px">Reset</Button> -->
         </FormItem>
       </Form>
@@ -131,7 +134,8 @@ export default {
   },
   data() {
     return {
-      id:this.$route.query.id,
+      loading:false,
+     // id:this.$route.params.id,
       formValidate: {
         id: "",
         billCode: "",
@@ -223,28 +227,33 @@ export default {
       }
     };
   },
+  props:{
+    id:{
+      type:String,
+      default:''
+    }
+  },
   mounted(){
-    // console.log(this.id)
+    //  console.log(this.$route)
     this.get();
   },
   methods: {
     get(){
-      get({id:this.id}).then(res=>{
-        console.log(res.data)
+      get({id:this.id}).then(res=>{ 
         this.formValidate = res.data
       })
     },
     handleSubmit(name) {
       this.$refs[name].validate(valid => {
-        if (valid) {
-          console.log(JSON.stringify(this.$refs[name].model));
+        if (valid) { 
+          this.loading = true
           postDemand(this.$refs[name].model).then(res => {
             console.log(res.data);
-            // this.$Message.success(JSON.stringify(this.$refs[name].model));
-
+            // this.$Message.success(JSON.stringify(this.$refs[name].model)); 
             this.$Message.success("Success!");
             this.handleReset(name);
-          });
+            this.$emit('on-success',res.data)
+          }).finally(()=>this.loading = false);
         } else {
           this.$Message.error("Fail!");
         }
