@@ -4,33 +4,33 @@
       <p slot="title">需求录入</p>
       <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="150">
         <Row>
-          <Col span="12">
+          <Col span="15">
             <Row>
-              <Col span="8">
+              <Col  span="8">
                 <FormItem label="需求编号" prop="billCode">
-                  <Input v-model="formValidate.billCode"></Input>
+                  <Input v-model="formValidate.billCode" :readonly="readonly"/> 
                 </FormItem>
-              </Col>
+              </Col >
               <Col span="8">
                 <FormItem label="客户名称" prop="customerName">
-                  <Input v-model="formValidate.customerName"></Input>
+                  <Input v-model="formValidate.customerName" :readonly="readonly"></Input>
                 </FormItem>
               </Col>
               <Col span="8">
                 <FormItem label="录入日期" prop="inputDate">
-                  <DatePicker v-model="formValidate.inputDate"></DatePicker>
+                  <DatePicker v-model="formValidate.inputDate" type="date" :readonly="readonly"></DatePicker>
                 </FormItem>
               </Col>
             </Row>
             <Row>
               <Col span="8">
                 <FormItem label="本次软件版本号" prop="versionNumber">
-                  <Input v-model="formValidate.versionNumber"></Input>
+                  <Input v-model="formValidate.versionNumber" :readonly="readonly"></Input>
                 </FormItem>
               </Col>
               <Col span="8">
                 <FormItem label="优先级" prop="priority">
-                  <Select v-model="formValidate.priority">
+                  <Select v-model="formValidate.priority" :disabled="readonly">
                     <Option value="急">急</Option>
                     <Option value="一般">一般</Option>
                     <Option value="不急">不急</Option>
@@ -39,14 +39,14 @@
               </Col>
               <Col span="8">
                 <FormItem label="理论交期" prop="theoryDate">
-                  <DatePicker v-model="formValidate.theoryDate"></DatePicker>
+                  <DatePicker v-model="formValidate.theoryDate" :readonly="readonly"></DatePicker>
                 </FormItem>
               </Col>
             </Row>
             <Row>
               <Col span="8">
                 <FormItem label="客户状态" prop="clientRelationship">
-                  <Select v-model="formValidate.clientRelationship">
+                  <Select v-model="formValidate.clientRelationship" :disabled="readonly">
                     <Option value="实施中">实施中</Option>
                     <Option value="维护中">维护中</Option>
                     <Option value="其他">其他</Option>
@@ -55,36 +55,36 @@
               </Col>
               <Col span="8">
                 <FormItem label="计划完成日期" prop="plannedCompletionDate">
-                  <DatePicker v-model="formValidate.plannedCompletionDate"></DatePicker>
+                  <DatePicker v-model="formValidate.plannedCompletionDate" :readonly="readonly"></DatePicker>
                 </FormItem>
               </Col>
               <Col span="8">
                 <FormItem label="所属模块" prop="moduleName">
-                  <Input v-model="formValidate.moduleName"></Input>
+                  <Input v-model="formValidate.moduleName" :readonly="readonly"></Input>
                 </FormItem>
               </Col>
             </Row>
             <Row>
               <Col span="8">
                 <FormItem label="需求提出者" prop="demander">
-                  <Input v-model="formValidate.demander"></Input>
+                  <Input v-model="formValidate.demander" :readonly="readonly"></Input>
                 </FormItem>
               </Col>
               <Col span="8">
                 <FormItem label="手机" prop="telephone">
-                  <Input v-model="formValidate.telephone"></Input>
+                  <Input v-model="formValidate.telephone" :readonly="readonly"></Input>
                 </FormItem>
               </Col>
               <Col span="8">
                 <FormItem label="提出日期" prop="suggestDate">
-                  <DatePicker v-model="formValidate.suggestDate"></DatePicker>
+                  <DatePicker v-model="formValidate.suggestDate" :readonly="readonly"></DatePicker>
                 </FormItem>
               </Col>
             </Row>
             <Row>
               <Col span="8">
                 <FormItem label="实施/客服" prop="implement">
-                  <Input v-model="formValidate.implement"></Input>
+                  <Input v-model="formValidate.implement" :readonly="readonly"></Input>
                 </FormItem>
               </Col>
             </Row>
@@ -100,20 +100,20 @@
               </Col>
             </Row>
           </Col>
-          <Col span="12">
+          <Col span="8">
             <FormItem>
               <Upload multiple action="//jsonplaceholder.typicode.com/posts/">
-                <Button icon="ios-cloud-upload-outline">上传附件</Button>
+                <Button icon="ios-cloud-upload-outline" :readonly="readonly">上传附件</Button>
               </Upload>
             </FormItem>
           </Col>
         </Row>
         <FormItem label="需求描述" prop="describe">
-          <markdown-editor v-model="formValidate.describe" />
+          <markdown-editor v-model="formValidate.describe" :readonly="readonly" />
         </FormItem>
 
         <FormItem>
-          <Button type="primary" :loading="loading" @click="handleSubmit('formValidate')">
+          <Button v-show="!readonly" type="primary" :loading="loading" @click="handleSubmit('formValidate')">
             <span v-if="!loading">提交</span>
             <span v-else>提交...</span>
           </Button>
@@ -134,7 +134,7 @@ export default {
   },
   data() {
     return {
-      loading:false,
+      loading:false, 
      // id:this.$route.params.id,
       formValidate: {
         id: "",
@@ -231,11 +231,20 @@ export default {
     id:{
       type:String,
       default:''
+    },
+    state:{
+      type:String,
+      default:'insert'
     }
   },
   mounted(){
     //  console.log(this.$route)
     this.get();
+  },
+  computed:{
+    readonly(){
+      return this.state==="browse"
+    }
   },
   methods: {
     get(){
@@ -245,10 +254,11 @@ export default {
     },
     handleSubmit(name) {
       this.$refs[name].validate(valid => {
-        if (valid) { 
+        if (valid) {  
+          console.log(JSON.stringify(this.$refs[name].model));
           this.loading = true
           postDemand(this.$refs[name].model).then(res => {
-            console.log(res.data);
+            //console.log(res.data);
             // this.$Message.success(JSON.stringify(this.$refs[name].model)); 
             this.$Message.success("Success!");
             this.handleReset(name);

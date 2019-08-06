@@ -3,9 +3,11 @@ import { doCustomTimes,getParams } from '@/libs/util'
 
 
 export const postDemandData = res => {
+    let str= JSON.stringify(res.body)
+    let obj = JSON.parse(str)
     let data = {
         success: true,
-        data: res,
+        data: obj,
         msg: '成功'
     }
     return data

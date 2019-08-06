@@ -1,37 +1,49 @@
 <template>
   <div ref="demandlist">
     <!-- 需求列表 -->
-    <Card> 
-      <Table ref="tables" editable searchable search-place="top" highlight-row
-      :data="list" v-model="list" :columns="columns" :loading="loading">
-        <template slot-scope="{ row }" slot="action">
+    <Card>
+      <Table
+        ref="tables"
+        editable
+        searchable
+        search-place="top"
+        highlight-row
+        :data="list"
+        :columns="columns"
+        :loading="loading"
+      >
+        <template slot-scope="{ row }" slot="action"> 
           <Button
-            type="primary"
+            v-for="(item,i) in buttons"
+            :key="i"
+            type="text"
+            shape="circle"
+            :icon="item.icon"
             size="small"
-            style="margin-right: 2px"
-            @click="getDemand(row.id)"
-          >查看</Button>
-          <Button ghost
-            type="primary"
-            size="small"
-            style="margin-right: 5px"
-            @click="getDemand(row.id)"
-          >审核</Button>
+            style="margin-left: 3px"
+            @click="listenRowEventHandler(row,item.method)"
+          ></Button>
           <!-- <Button type="error" size="small" @click="getDemand(index)">Delete</Button> -->
-        </template> 
+        </template>
       </Table>
-      <br>
+      <br />
       <!-- <Divider size="small"/> -->
-      <Page ref="page" :total="totalCount" :page-size="20"
-      @on-change="getDemandList()" 
-      @on-page-size-change="getDemandList()" show-sizer  show-total/>
+      <Page
+        ref="page"
+        :total="totalCount"
+        :page-size="20"
+        @on-change="getDemandList()"
+        @on-page-size-change="getDemandList()"
+        show-sizer
+        show-total
+      />
       <!-- <Button style="margin: 10px 0;" type="primary" @click="exportExcel">导出为Csv文件</Button> -->
     </Card>
     <!-- <h1>需求列表</h1>
     <li v-for="item in list" @click="getDemand(item.id)" :key="item.id">
       <Button size="large">{{item.billCode}}</Button>
     </li>-->
-  </div> 
+  </div>
 </template>
 <script>
 import Tables from "_c/tables";
@@ -44,9 +56,23 @@ export default {
   },
   data() {
     return {
-      loading:false,
-      totalCount:0,
+      loading: false,
+      totalCount: 0,
       list: [],
+      buttons: [
+        {
+          icon: "md-search",
+          method: "viewInfo"
+        },
+        {
+          icon: "md-create",
+          method: "handleEdit"
+        },
+        {
+          icon: "md-checkmark",
+          method: "handleAudit"
+        }
+      ],
       columns: [
         { title: "需求编号", key: "billCode" },
         { title: "录入日期", key: "inputDate" },
@@ -60,26 +86,67 @@ export default {
         { title: "需求提出者", key: "demander" },
         { title: "手机", key: "telephone" },
         { title: "所属模块", key: "moduleName" },
-        { title: "操作", slot: "action",   width: 150  }
-      ], 
+        { title: "操作", slot: "action", width: 150 }
+      ]
     };
   },
   mounted() {
     this.getDemandList();
   },
-  methods: { 
-    getDemandList() {  
-      let data ={
-        pageIndex:this.$refs["page"].currentPage,
-        pageSize:this.$refs["page"].currentPageSize
+  methods: {
+    listenRowEventHandler(row, method) { 
+      var handler = this[method];
+      if (handler) {
+        handler(row);
+      } else {
+        this.$Message.error("没有绑定处理事件");
       }
-      this.loading = true
-      getList(data).then(res => { 
-        this.totalCount = res.data.total
-        this.list = res.data.data
-      }).finally(()=> this.loading=false);
     },
-    getDemand(id) {
+    getDemandList() {
+      let data = {
+        pageIndex: this.$refs["page"].currentPage,
+        pageSize: this.$refs["page"].currentPageSize
+      };
+      this.loading = true;
+      getList(data)
+        .then(res => {
+          this.totalCount = res.data.total;
+          this.list = res.data.data;
+        })
+        .finally(() => (this.loading = false));
+    },
+    handleAudit(row){
+      this.$Modal.confirm({
+        title:'是否审核单据？', 
+        onOk(){
+          this.$Message.success("操作成功！")
+        }
+      })
+    },
+    handleEdit(row){ 
+      let _this = this; 
+      let instance = this.$Modal.info({
+        width: this.$refs["demandlist"].offsetWidth,
+        okText: "关闭",
+        render: h => {
+          return h(DemandInput, {
+            props: {
+              id: row.id,
+              state: "eidt"
+            },
+            on: {
+              "on-success": function(param) { 
+                //console.log(JSON.parse(param.data));
+                row=Object.assign(row,JSON.parse(param.data))
+                console.log(JSON.stringify(row));
+                _this.$Modal.remove();
+              }
+            }
+          });
+        }
+      });
+    },
+    viewInfo(row) {
       let _this = this;
       console.log(this.$refs["demandlist"].offsetWidth);
       let instance = this.$Modal.info({
@@ -88,7 +155,8 @@ export default {
         render: h => {
           return h(DemandInput, {
             props: {
-              id: id
+              id: row.id,
+              state: "browse"
             },
             on: {
               "on-success": function(param) {
