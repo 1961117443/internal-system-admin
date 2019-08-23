@@ -18,7 +18,7 @@ export const getTableData = req => {
 
 export const getDragList = req => {
   let dragList = []
-  doCustomTimes(5, () => {
+  doCustomTimes(50, () => {
     dragList.push(Mock.mock({
       name: Random.csentence(10, 13),
       id: Random.increment(10)

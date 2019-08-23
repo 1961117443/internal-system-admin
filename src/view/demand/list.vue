@@ -49,10 +49,12 @@
 import Tables from "_c/tables";
 import { getList } from "@/api/demand";
 import DemandInput from "@/view/demand/input.vue";
+import expandRow from "@/view/demand/expandRow.vue";
 export default {
   components: {
     DemandInput,
-    Tables
+    Tables,
+    expandRow
   },
   data() {
     return {
@@ -74,6 +76,16 @@ export default {
         }
       ],
       columns: [
+        {
+          type:'expand',width:50,
+          render:(h,params)=>{
+            return h(expandRow,{
+                props:{
+                  row:params.row
+                }
+              })
+          }
+        },
         { title: "需求编号", key: "billCode" },
         { title: "录入日期", key: "inputDate" },
         { title: "理论交期", key: "theoryDate" },

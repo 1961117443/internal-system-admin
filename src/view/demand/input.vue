@@ -96,7 +96,14 @@
                     type="textarea"
                     :autosize="{minRows: 2,maxRows: 5}" 
                   ></Input>
-                </FormItem>-->
+                </FormItem> -->
+                <FormItem label="需求描述" prop="describe">
+                  <Input
+                    v-model="formValidate.describe"
+                    type="textarea"
+                    :autosize="{minRows: 2,maxRows: 5}" 
+                  ></Input>
+                </FormItem>
               </Col>
             </Row>
           </Col>
@@ -108,9 +115,9 @@
             </FormItem>
           </Col>
         </Row>
-        <FormItem label="需求描述" prop="describe">
+        <!-- <FormItem label="需求描述" prop="describe"> 
           <markdown-editor v-model="formValidate.describe" :readonly="readonly" />
-        </FormItem>
+        </FormItem> -->
 
         <FormItem>
           <Button v-show="!readonly" type="primary" :loading="loading" @click="handleSubmit('formValidate')">
